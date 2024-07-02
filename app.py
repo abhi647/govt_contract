@@ -64,13 +64,13 @@ def extract_text_from_file(file_path):
     else:
         return ""
 
-# Extract keywords using OpenAI
-def extract_keywords(company_profile_text, openai_api_key):
+# Extract competencies using OpenAI
+def extract_competencies(company_profile_text, openai_api_key):
     client = OpenAI(api_key=openai_api_key)
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
-            {"role": "system", "content": "Extract the most relevant keywords from the following company profile text:"},
+            {"role": "system", "content": "Extract the core competencies and relevant keywords from the following company profile text:"},
             {"role": "user", "content": company_profile_text}
         ],
         temperature=0
@@ -79,9 +79,9 @@ def extract_keywords(company_profile_text, openai_api_key):
 
 # Match contracts based on company profile
 def get_recommended_contracts(company_profile_text, openai_api_key):
-    keywords = extract_keywords(company_profile_text, openai_api_key)
-    keyword_query = " OR ".join([f"requirements_title LIKE '%{kw.strip()}%' OR requirement LIKE '%{kw.strip()}%'" for kw in keywords])
-    query = f"SELECT * FROM data WHERE {keyword_query}"
+    competencies = extract_competencies(company_profile_text, openai_api_key)
+    competency_query = " OR ".join([f"requirement LIKE '%{comp.strip()}%'" for comp in competencies])
+    query = f"SELECT * FROM data WHERE {competency_query}"
     return pd.read_sql_query(query, conn)
 
 # Generate SQL query using OpenAI
@@ -98,8 +98,8 @@ def generate_sql_query(prompt, openai_api_key):
     return response.choices[0].message.content.strip()
 
 # Streamlit interface
-st.set_page_config(page_title="Condense Research, Amplify Insight", layout="wide")
-st.title("Condense Research, Amplify Insight")
+st.set_page_config(page_title="ContractScout", layout="wide")
+st.title("ContractScout:Your Ultimate Contract Discovery Tool")
 
 # Sidebar for company profile upload
 with st.sidebar:
