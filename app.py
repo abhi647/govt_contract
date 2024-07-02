@@ -99,10 +99,13 @@ def generate_sql_query(prompt, openai_api_key):
 
 # Streamlit interface
 st.set_page_config(page_title="ContractScout", layout="wide")
-st.title("ContractScout:Your Ultimate Contract Discovery Tool")
 
-# Sidebar for company profile upload
+# Sidebar with logo and company profile upload
 with st.sidebar:
+    st.image("logo.png", use_column_width=True)
+    st.title("ContractScout")
+    st.subheader("Navigating Opportunities with Precision")
+
     st.header("Company Profile")
     uploaded_file = st.file_uploader("Upload Company Profile", type=["txt", "pdf", "docx"])
     if uploaded_file is not None:
